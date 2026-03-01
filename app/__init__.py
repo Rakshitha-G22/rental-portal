@@ -21,7 +21,7 @@ def create_app():
     
     # Config
     app.config.from_object('config.Config')
-    app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:Rakshu%40123@localhost:5432/rental-portal'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['JWT_SECRET_KEY'] = os.getenv(
         'JWT_SECRET_KEY',
