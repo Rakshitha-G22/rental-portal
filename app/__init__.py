@@ -23,17 +23,17 @@ def create_app():
 
     app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=5)
 
-    # Database config (Railway safe ⭐)
+
     db_url = os.getenv("DATABASE_URL")
 
-    if db_url:
-        if db_url.startswith("postgres://"):
-            db_url = db_url.replace("postgres://", "postgresql://", 1)
+    if not db_url:
+        raise Exception("DATABASE_URL not found")
 
-        app.config["SQLALCHEMY_DATABASE_URI"] = db_url
-    else:
-        raise Exception("DATABASE_URL is not set in Railway environment variables")
+# Railway gives postgres:// but SQLAlchemy needs postgresql://
+    if db_url.startswith("postgres://"):
+        db_url = db_url.replace("postgres://", "postgresql://", 1)
 
+    app.config["SQLALCHEMY_DATABASE_URI"] = db_url
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
     # Initialize extensions (only once)
