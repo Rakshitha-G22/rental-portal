@@ -23,7 +23,8 @@ def create_app():
     db_url = os.getenv("DATABASE_URL")
 
     if not db_url:
-        raise Exception("DATABASE_URL is missing!")
+    # Local development fallback
+        db_url = "postgresql://postgres:Rakshu%40123@localhost:5432/rental-portal"
 
     if db_url.startswith("postgres://"):
         db_url = db_url.replace("postgres://", "postgresql://", 1)

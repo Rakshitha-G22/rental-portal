@@ -1,7 +1,7 @@
 # backend/app/routes/admin.py
 
 from flask import Blueprint, request, jsonify
-from app.models import Flat, Booking, SupportQuery, User, db
+from app.models import Flat, Booking, User, db
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from sqlalchemy import func
 
