@@ -48,7 +48,7 @@ def create_app():
     )
 
     # Import models
-    from .models import User, Flat, Booking, SupportQuery
+    from .models import User, Flat, Booking
 
     # Register routes
     from .routes.auth import auth_bp
