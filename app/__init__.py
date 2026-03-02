@@ -8,14 +8,11 @@ from datetime import timedelta
 db = SQLAlchemy()
 jwt = JWTManager()
 
-
 def create_app():
     app = Flask(__name__)
 
-    # Load base config
     app.config.from_object('config.Config')
 
-    # JWT Config
     app.config['JWT_SECRET_KEY'] = os.getenv(
         'JWT_SECRET_KEY',
         'rental-portal-super-secure-jwt-secret-key-2026-strong'
@@ -23,36 +20,27 @@ def create_app():
 
     app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=5)
 
-
-    import os
-
     db_url = os.getenv("DATABASE_URL")
 
     if not db_url:
         raise Exception("DATABASE_URL is missing!")
 
-# Only replace if old format
     if db_url.startswith("postgres://"):
         db_url = db_url.replace("postgres://", "postgresql://", 1)
 
     app.config["SQLALCHEMY_DATABASE_URI"] = db_url
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
-    # Initialize extensions (only once)
     db.init_app(app)
     jwt.init_app(app)
 
-    # CORS config
     CORS(
         app,
         resources={r"/api/*": {"origins": "*"}},
         supports_credentials=True
     )
 
-    # Import models
     from .models import User, Flat, Booking
-
-    # Register routes
     from .routes.auth import auth_bp
     from .routes.flats import flats_bp
     from .routes.admin import admin_bp
@@ -63,7 +51,6 @@ def create_app():
     app.register_blueprint(admin_bp, url_prefix='/api/admin')
     app.register_blueprint(bookings_bp, url_prefix='/api/bookings')
 
-    # Create tables (for development + Railway quick deploy)
     with app.app_context():
         db.create_all()
 
