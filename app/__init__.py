@@ -24,12 +24,14 @@ def create_app():
     app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=5)
 
 
+    import os
+
     db_url = os.getenv("DATABASE_URL")
 
     if not db_url:
-        raise Exception("DATABASE_URL not found")
+        raise Exception("DATABASE_URL is missing!")
 
-# Railway gives postgres:// but SQLAlchemy needs postgresql://
+# Only replace if old format
     if db_url.startswith("postgres://"):
         db_url = db_url.replace("postgres://", "postgresql://", 1)
 
