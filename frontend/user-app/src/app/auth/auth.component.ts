@@ -75,7 +75,7 @@ export class AuthComponent {
           name: this.formData.name,
           email: this.formData.email,
           password: this.formData.password,
-          role: 'user'   // Default role
+          role: "user"   
         }
       ).subscribe({
         next: () => {
