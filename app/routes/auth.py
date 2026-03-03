@@ -8,60 +8,81 @@ auth_bp = Blueprint("auth_bp", __name__)
 
 
 # ------------------------
-# REGISTER
+# REGISTER USER
 # ------------------------
-@auth_bp.route("/register", methods=["POST"])
+@auth_bp.route("/register", methods=["POST", "OPTIONS"])
 def register():
 
-    data = request.get_json()
+    if request.method == "OPTIONS":
+        return jsonify({}), 200
 
-    name = data.get("name", "").strip()
-    email = data.get("email", "").strip().lower()
-    password = data.get("password", "")
+    try:
+        data = request.get_json()
 
-    if not name or not email or not password:
-        return jsonify({"msg": "All fields required"}), 400
+        name = data.get("name", "").strip()
+        email = data.get("email", "").strip().lower()
+        password = data.get("password", "")
 
-    # Check user exists
-    if User.query.filter_by(email=email).first():
-        return jsonify({"msg": "User already exists"}), 400
+        if not name or not email or not password:
+            return jsonify({"msg": "All fields required"}), 400
 
-    hashed_password = generate_password_hash(password)
+        # Check if user exists
+        if User.query.filter_by(email=email).first():
+            return jsonify({"msg": "User already exists"}), 400
 
-    new_user = User(
-        name=name,
-        email=email,
-        password=hashed_password,
-        role="user"
-    )
+        hashed_password = generate_password_hash(password)
 
-    db.session.add(new_user)
-    db.session.commit()
+        new_user = User(
+            name=name,
+            email=email,
+            password=hashed_password,
+            role="user"
+        )
 
-    return jsonify({"msg": "User registered successfully"}), 201
+        db.session.add(new_user)
+        db.session.commit()
+
+        return jsonify({"msg": "User registered successfully"}), 201
+
+    except Exception as e:
+        return jsonify({"msg": str(e)}), 500
 
 
 # ------------------------
-# LOGIN
+# LOGIN USER
 # ------------------------
-@auth_bp.route("/login", methods=["POST"])
+@auth_bp.route("/login", methods=["POST", "OPTIONS"])
 def login():
 
-    data = request.get_json()
+    if request.method == "OPTIONS":
+        return jsonify({}), 200
 
-    email = data.get("email", "").strip().lower()
-    password = data.get("password", "")
+    try:
+        data = request.get_json()
 
-    user = User.query.filter_by(email=email).first()
+        email = data.get("email", "").strip().lower()
+        password = data.get("password", "")
 
-    if not user or not check_password_hash(user.password, password):
-        return jsonify({"msg": "Invalid credentials"}), 401
+        user = User.query.filter_by(email=email).first()
 
-    access_token = create_access_token(identity=str(user.id))
+        if not user:
+            return jsonify({"msg": "User not found"}), 404
 
-    return jsonify({
-        "access_token": access_token,
-        "name": user.name,
-        "role": user.role,
-        "email": user.email
-    }), 200
+        if not check_password_hash(user.password, password):
+            return jsonify({"msg": "Invalid credentials"}), 401
+
+        # Create JWT token
+        access_token = create_access_token(
+            identity=str(user.id)
+        )
+
+        return jsonify({
+            "access_token": access_token,
+            "name": user.name,
+            "email": user.email,
+            "role": user.role,
+            "msg": "Login successful"
+        }), 200
+
+    except Exception as e:
+        return jsonify({"msg": str(e)}), 500
