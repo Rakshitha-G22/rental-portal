@@ -42,15 +42,18 @@ def create_app():
     jwt.init_app(app)
 
  
-    CORS(app, supports_credentials=True, resources={
-    r"/api/*": {
-        "origins": [
-            "https://rental-portal-full-production.up.railway.app"
-        ],
-        "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-        "allow_headers": ["Content-Type", "Authorization"]
+    CORS(app,
+    supports_credentials=True,
+    resources={
+        r"/api/*": {
+            "origins": [
+                "https://rental-portal-full-production.up.railway.app"
+            ],
+            "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+            "allow_headers": ["Content-Type", "Authorization"]
+        }
     }
-})
+)
 
     # Import Models + Routes
     from .models import User, Flat, Booking
