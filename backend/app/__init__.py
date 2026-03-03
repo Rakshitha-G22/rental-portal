@@ -42,12 +42,16 @@ def create_app():
     jwt.init_app(app)
 
  
-    CORS(app, supports_credentials=True, resources={
-    r"/api/*": {
-        "origins": "*",
-        "methods": ["GET", "POST", "OPTIONS", "PUT", "DELETE"]
-    }
-})
+    from flask_cors import CORS
+
+    CORS(app,
+    supports_credentials=True,
+    origins=[
+        "https://rental-portal-full-production.up.railway.app"
+    ],
+    allow_headers=["Content-Type", "Authorization"],
+    methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"]
+)
 
     # Import Models + Routes
     from .models import User, Flat, Booking

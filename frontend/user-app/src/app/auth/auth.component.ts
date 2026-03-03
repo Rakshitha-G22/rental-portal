@@ -1,92 +1,106 @@
-import { environment } from '../../environments/environment';
+// src/app/auth/auth.component.ts
 import { Component } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { Router } from '@angular/router';
+
 
 @Component({
   selector: 'app-auth',
   standalone: true,
   imports: [CommonModule, FormsModule, HttpClientModule],
-  templateUrl: './auth.component.html'
+  templateUrl: './auth.component.html',
 })
 export class AuthComponent {
-
   isLogin = true;
-  errorMsg = '';
+  name = '';
+  email = '';
+  password = '';
 
-  formData = {
-    name: '',
-    email: '',
-    password: ''
-  };
+  toastMessage = '';
+  toastType: 'success' | 'error' = 'success';
 
-  constructor(
-    private http: HttpClient,
-    private router: Router
-  ) {}
+  constructor(private http: HttpClient, private router: Router) {}
 
-  toggleMode() {
-    this.isLogin = !this.isLogin;
-    this.errorMsg = '';
+
+  switchToLogin() { this.isLogin = true; }
+  switchToRegister() { this.isLogin = false; }
+
+  // ---------------- Login ----------------
+  login() {
+    if (!this.email || !this.password) {
+      this.toastMessage = 'Please fill all fields!';
+      this.toastType = 'error';
+      return;
+    }
+
+    this.http.post<any>('http://127.0.0.1:5000/api/auth/login', {
+      email: this.email,
+      password: this.password
+    }).subscribe({
+      next: (res) => {
+        if (res.token) {
+          const username = res.name;
+          this.toastMessage = `Welcome, ${username}!`;
+          this.toastType = 'success';
+
+          // ✅ Save username in localStorage
+          localStorage.setItem('username', username);
+
+          // ✅ Redirect to dashboard after 1.5s
+          setTimeout(() => {
+            this.router.navigate(['/dashboard']);
+          }, 1500);
+
+        } else {
+          this.toastMessage = res.msg || 'Login failed!';
+          this.toastType = 'error';
+        }
+      },
+      error: (err) => {
+        this.toastMessage = err.error?.msg || 'Server error!';
+        this.toastType = 'error';
+      }
+    });
   }
 
-  submit() {
-
-    this.errorMsg = '';
-
-    if (this.isLogin) {
-
-      // LOGIN
-      this.http.post<any>(
-        `${environment.apiUrl}/auth/login`,
-        {
-          email: this.formData.email,
-          password: this.formData.password
-        }
-      ).subscribe({
-        next: (res) => {
-
-          localStorage.setItem('access_token', res.access_token);
-          localStorage.setItem('role', res.role);
-          localStorage.setItem('name', res.name);
-
-          // Role based navigation
-          if (res.role === 'admin') {
-            this.router.navigate(['/admin']);
-          } else {
-            this.router.navigate(['/flats']);
-          }
-
-        },
-        error: () => {
-          this.errorMsg = "Invalid email or password";
-        }
-      });
-
-    } else {
-
-      // REGISTER
-      this.http.post(
-        `${environment.apiUrl}/auth/register`,
-        {
-          name: this.formData.name,
-          email: this.formData.email,
-          password: this.formData.password,
-          role: "user"   
-        }
-      ).subscribe({
-        next: () => {
-          alert("Registration successful! Please login");
-          this.isLogin = true;
-        },
-        error: () => {
-          this.errorMsg = "Registration failed";
-        }
-      });
-
+  // ---------------- Register ----------------
+  register() {
+    if (!this.name || !this.email || !this.password) {
+      this.toastMessage = 'Please fill all fields!';
+      this.toastType = 'error';
+      return;
     }
+
+    this.http.post<any>('http://127.0.0.1:5000/api/auth/register', {
+      name: this.name,
+      email: this.email,
+      password: this.password
+    }).subscribe({
+      next: (res) => {
+        if (res.msg) {
+          this.toastMessage = `Welcome, ${this.name}!`;
+          this.toastType = 'success';
+
+          // ✅ Save username in localStorage
+          localStorage.setItem('username', this.name);
+
+          // ✅ Redirect to dashboard after 1.5s
+          setTimeout(() => {
+            
+           this.router.navigate(['/dashboard']);
+          }, 1500);
+
+        } else {
+          this.toastMessage = res.msg || 'Registration failed!';
+          this.toastType = 'error';
+        }
+      },
+      error: (err) => {
+        this.toastMessage = err.error?.msg || 'Server error!';
+        this.toastType = 'error';
+      }
+    });
   }
 }
