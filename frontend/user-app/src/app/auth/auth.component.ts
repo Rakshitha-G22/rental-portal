@@ -36,13 +36,17 @@ export class AuthComponent {
 
   submit() {
 
-    if (this.isLogin) {
-      // LOGIN
-      
-      this.http.post<any>('http://localhost:5000/api/auth/login', {
+  if (this.isLogin) {
+
+    // LOGIN
+    this.http.post<any>(
+      `${environment.apiUrl}/auth/login`,
+      {
         email: this.formData.email,
         password: this.formData.password
-      }).subscribe(res => {
+      }
+    ).subscribe({
+      next: (res) => {
 
         localStorage.setItem('access_token', res.access_token);
         localStorage.setItem('role', res.role);
@@ -54,15 +58,28 @@ export class AuthComponent {
           this.router.navigate(['/flats']);
         }
 
+      },
+      error: () => {
+        alert("Invalid email or password ❌");
+      }
+    });
 
-      });
-    } else {
-      // REGISTER
-     this.http.post(`${environment.apiUrl}/api/auth/register`, this.formData)
-        .subscribe(() => {
-          alert("Registration successful! Please login.");
-          this.isLogin = true;
-        });
-    }
+  } else {
+
+    // REGISTER
+    this.http.post(
+      `${environment.apiUrl}/auth/register`,
+      this.formData
+    ).subscribe({
+      next: () => {
+        alert("Registration successful! Please login ✅");
+        this.isLogin = true;
+      },
+      error: () => {
+        alert("Registration failed ❌");
+      }
+    });
+
   }
+}
 }
