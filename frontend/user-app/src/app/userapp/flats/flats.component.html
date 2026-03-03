@@ -23,9 +23,9 @@
     (change)="filterFlats()"
     class="border p-2 rounded">
 
-    <option value="">All Towers</option>
-    <option *ngFor="let tower of towers" [value]="tower">
-      {{ tower }}
+    <option value="">Location</option>
+    <option *ngFor="let location of location" [value]="location">
+      {{ location }}
     </option>
 
   </select>
