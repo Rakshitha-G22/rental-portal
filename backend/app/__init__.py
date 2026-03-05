@@ -63,7 +63,7 @@ def create_app():
     app,
     supports_credentials=True,
         resources={
-            r"/*": {
+            r"/api/*": {
                 "origins": [
                     "http://localhost:4200",
                     "https://rental-portal-full-production.up.railway.app"
