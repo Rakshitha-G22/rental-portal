@@ -60,14 +60,16 @@ def create_app():
     CORS(
     app,
     supports_credentials=True,
-    resources={
-        r"/api/*": {
-            "origins": [
-                "http://localhost:4200",
-                "https://rental-portal-full-production.up.railway.app"
-            ]
+        resources={
+            r"/api/*": {
+                "origins": [
+                    "http://localhost:4200",
+                    "https://rental-portal-full-production.up.railway.app"
+                ],
+                "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+                "allow_headers": ["Content-Type", "Authorization"]
+            }
         }
-    }
 )
 
     # ==========================
