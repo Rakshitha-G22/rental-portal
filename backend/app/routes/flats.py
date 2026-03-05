@@ -6,9 +6,9 @@ flats_bp = Blueprint("flats_bp", __name__)
 
 
 # ================= GET ALL FLATS =================
+@flats_bp.route("", methods=["GET"])
 @flats_bp.route("/", methods=["GET"])
 def get_all_flats():
-
     try:
         flats = Flat.query.all()
         flat_list = []
@@ -62,7 +62,9 @@ def get_flat(flat_id):
             return jsonify({"msg": "Flat not found"}), 404
 
         amenities_list = (
-            flat.amenities.split(",") if flat.amenities else []
+            [a.strip() for a in flat.amenities.split(",")]
+            if flat.amenities
+            else []
         )
 
         active_booking = Booking.query.filter(
