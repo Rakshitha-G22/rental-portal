@@ -87,7 +87,7 @@ def create_app():
     # REGISTER BLUEPRINTS
     # ==========================
     app.register_blueprint(auth_bp, url_prefix="/api/auth")
-    app.register_blueprint(flats_bp, url_prefix="/api/flats")
+    app.register_blueprint(flats_bp)
     app.register_blueprint(admin_bp, url_prefix="/api/admin")
     app.register_blueprint(bookings_bp, url_prefix="/api/bookings")
 
