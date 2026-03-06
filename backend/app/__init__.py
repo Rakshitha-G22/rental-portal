@@ -1,6 +1,6 @@
 import os
 from flask_migrate import Migrate
-from flask import Flask
+from flask import Flask,jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager
 from flask_cors import CORS
@@ -76,6 +76,10 @@ def create_app():
     def add_headers(response):
         response.headers["Access-Control-Allow-Credentials"] = "true"
         return response
+    # Catch API routing properly
+    @app.errorhandler(404)
+    def api_not_found(e):
+        return jsonify({"msg": "API not found"}), 404
 
     # ==========================
     # IMPORT ROUTES

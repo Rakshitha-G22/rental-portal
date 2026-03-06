@@ -3,7 +3,7 @@ from app import create_app
 
 app = create_app()
 
-# Railway + Gunicorn will use this
+# Gunicorn entry point
 application = app
 
 if __name__ == "__main__":
