@@ -16,8 +16,6 @@ def create_app():
 
     app = Flask(__name__)
 
-
-
     # ==========================
     # CONFIG
     # ==========================
@@ -41,7 +39,6 @@ def create_app():
     if not db_url:
         db_url = "postgresql://postgres:Rakshu%40123@localhost:5432/rental-portal"
 
-    # Railway PostgreSQL fix
     if db_url.startswith("postgres://"):
         db_url = db_url.replace("postgres://", "postgresql://", 1)
 
@@ -49,19 +46,19 @@ def create_app():
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
     # ==========================
-    # EXTENSIONS INIT
+    # EXTENSIONS
     # ==========================
     db.init_app(app)
     jwt.init_app(app)
 
-    migrate = Migrate(app, db)
+    Migrate(app, db)
 
     # ==========================
-    # CORS CONFIG ⭐⭐⭐⭐⭐ (MOST IMPORTANT)
+    # CORS CONFIG
     # ==========================
     CORS(
-    app,
-    supports_credentials=True,
+        app,
+        supports_credentials=True,
         resources={
             r"/api/*": {
                 "origins": [
@@ -72,8 +69,13 @@ def create_app():
                 "allow_headers": ["Content-Type", "Authorization"]
             }
         }
-)
+    )
 
+    # ⭐ AFTER REQUEST HEADERS
+    @app.after_request
+    def add_headers(response):
+        response.headers["Access-Control-Allow-Credentials"] = "true"
+        return response
 
     # ==========================
     # IMPORT ROUTES
@@ -90,11 +92,5 @@ def create_app():
     app.register_blueprint(flats_bp)
     app.register_blueprint(admin_bp, url_prefix="/api/admin")
     app.register_blueprint(bookings_bp, url_prefix="/api/bookings")
-
-    # ==========================
-    # CREATE TABLES (Dev Only)
-    # ==========================
-    # with app.app_context():
-    #     db.create_all()
 
     return app
