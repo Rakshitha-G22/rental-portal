@@ -1,24 +1,27 @@
-# Node.js base image
-FROM node:20-alpine
+# Node build stage
+FROM node:20-alpine AS build
 
-# Set work directory
 WORKDIR /app
 
-# Copy package files and install dependencies
+# Copy package files
 COPY package*.json ./
+
+# Install dependencies
 RUN npm install --legacy-peer-deps
 
-# Copy Angular app
+# Copy project files
 COPY . .
 
-# Build Angular app
-RUN npm run build --prod
+# Build Angular production build
+RUN npm run build --configuration=production
 
-# Install a lightweight web server
-RUN npm install -g serve
 
-# Expose port 4200
-EXPOSE 4200
+# Serve stage
+FROM nginx:alpine
 
-# Serve the Angular build
-CMD ["serve", "-s", "dist/user-app", "-l", "4200"]
+# Copy build output (Change dist/user-app if needed ⚠)
+COPY --from=build /app/dist/user-app /usr/share/nginx/html
+
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]
