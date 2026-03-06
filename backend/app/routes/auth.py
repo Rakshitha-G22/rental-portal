@@ -47,29 +47,37 @@ def register():
 # LOGIN
 # =============================
 @auth_bp.route("/login", methods=["POST", "OPTIONS"])
+@auth_bp.route("/login", methods=["POST", "OPTIONS"])
 def login():
 
     if request.method == "OPTIONS":
         return jsonify({}), 200
 
-    data = request.get_json()
+    try:
+        data = request.get_json()
 
-    email = data.get("email")
-    password = data.get("password")
+        email = data.get("email")
+        password = data.get("password")
 
-    user = User.query.filter_by(email=email).first()
+        if not email or not password:
+            return jsonify({"msg": "All fields required"}), 400
 
-    if not user:
-        return jsonify({"msg": "User not found"}), 404
+        user = User.query.filter_by(email=email).first()
 
-    if not check_password_hash(user.password, password):
-        return jsonify({"msg": "Invalid credentials"}), 401
+        if not user:
+            return jsonify({"msg": "User not found"}), 404
 
-    token = create_access_token(identity=str(user.id))
+        if not check_password_hash(user.password, password):
+            return jsonify({"msg": "Invalid credentials"}), 401
 
-    return jsonify({
-        "token": token,
-        "name": user.name,
-        "role": user.role,
-        "msg": "Login successful"
-    }), 200
+        token = create_access_token(identity=str(user.id))
+
+        return jsonify({
+            "token": token,
+            "name": user.name,
+            "role": user.role,
+            "msg": "Login successful"
+        }), 200
+
+    except Exception as e:
+        return jsonify({"msg": str(e)}), 500
