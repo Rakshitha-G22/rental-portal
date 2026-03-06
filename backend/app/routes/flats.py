@@ -5,7 +5,7 @@ from sqlalchemy import func
 flats_bp = Blueprint("flats_bp", __name__, url_prefix="/api/flats")
 
 # ================= GET ALL FLATS =================
-@flats_bp.route("/api/", methods=["GET"])
+@flats_bp.route("/", methods=["GET"])
 def get_all_flats():
     try:
         flats = Flat.query.all()

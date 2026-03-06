@@ -80,6 +80,10 @@ def create_app():
     @app.errorhandler(404)
     def api_not_found(e):
         return jsonify({"msg": "API not found"}), 404
+    
+    @app.route("/api/test")
+    def test():
+        return {"message": "Backend working"}
 
     # ==========================
     # IMPORT ROUTES
