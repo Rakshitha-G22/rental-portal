@@ -53,10 +53,10 @@ export class FlatsComponent implements OnInit {
   // ⭐ Load Flats
 
 ngOnInit(): void {
-  this.loadFlats();
-
   const token = localStorage.getItem('access_token');
   this.isLoggedIn = !!token;
+
+  this.loadFlats(); // load flats
 }
   // ⭐ Load Flats From API
   loadFlats() {
