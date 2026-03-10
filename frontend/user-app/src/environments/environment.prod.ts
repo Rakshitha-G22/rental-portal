@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: "https://courageous-expression-production.up.railway.app/api"
+  apiUrl: "https://rental-portal-production.up.railway.app/api"
 };
