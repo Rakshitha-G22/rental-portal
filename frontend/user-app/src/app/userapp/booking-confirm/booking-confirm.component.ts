@@ -117,8 +117,8 @@ export class BookingConfirmComponent implements OnInit {
       next: () => {
         alert("Booking Confirmed Successfully!");
 
-        // 🔥 Update UI instantly
         this.flat.is_booked = true;
+        this.router.navigate(['/flats']);
       },
 
       error: (err) => {

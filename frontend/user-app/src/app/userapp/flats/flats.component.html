@@ -32,27 +32,41 @@
       </option>
     </select>
 
-    <!-- Location -->
-    <select 
+        <select 
       [(ngModel)]="selectedLocation" 
       (change)="filterFlats()"
       class="border p-2 rounded">
-      <option value="">All Locations</option>
-      <option *ngFor="let location of locations" [value]="location">
+      <option value="">All Location</option>
+      <option *ngFor="let location  of locations" [value]="location">
         {{ location }}
       </option>
     </select>
 
-    <!-- Price -->
-    <select 
+            <select 
       [(ngModel)]="selectedPriceRange" 
       (change)="filterFlats()"
       class="border p-2 rounded">
-      <option value="">All Prices</option>
-      <option *ngFor="let range of priceRanges" [value]="range">
-        {{ range }}
+      <option value="">All Price</option>
+      <option *ngFor="let price of priceRanges" [value]="price">
+        {{ price }}
       </option>
     </select>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 <!-- <select [(ngModel)]="sortOption" (change)="sortFlats()" class="border p-2 rounded">
   <option value="">Sort By</option>
@@ -123,7 +137,7 @@
   <h3 class="font-semibold mb-2 text-lg">✨ Amenities:</h3>
 
 <p class="text-gray-600">
-  ✨ Amenities:
+  <!-- ✨ Amenities: -->
   {{ getAmenitiesText(flat?.amenities) }}
 </p>
 

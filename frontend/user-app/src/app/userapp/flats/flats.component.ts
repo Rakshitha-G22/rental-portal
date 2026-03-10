@@ -23,7 +23,10 @@ export class FlatsComponent implements OnInit {
   locations: string[] = [];
   flatNumbers: string[] = [];
   flatTypes: string[] = [];
+  flatFloors: string[] = [];
 
+  amenitiesList: string[] = [];
+  selectedAmenity: string = '';
 
 
   selectedTower: string = '';
@@ -36,7 +39,7 @@ export class FlatsComponent implements OnInit {
   isLoggedIn = false;
 
   showAvailableOnly: boolean = false;
-
+  selectedFlatFloor: string = '';
   
   priceRanges: string[] = [
     '0-5000',
@@ -72,6 +75,10 @@ ngOnInit(): void {
         this.locations = [...new Set(data.map(f => f.location))];
         this.flatTypes = [...new Set(data.map(f => f.flat_type))];
         this.flatNumbers = [...new Set(data.map(f => f.flat_number))];
+        this.flatFloors = [...new Set(data.map(f => f.floor))];
+        this.amenitiesList = [
+  ...new Set(data.flatMap(f => f.amenities || []))
+];
 
         this.loading = false;
       },
@@ -157,6 +164,14 @@ bookNow(flatId: number) {
         ? flat.flat_number === this.selectedFlatNumber
         : true;
 
+ const flatFloorMatch = this.selectedFlatFloor
+  ? flat.floor == this.selectedFlatFloor
+  : true;
+
+  const amenityMatch = this.selectedAmenity
+  ? flat.amenities?.includes(this.selectedAmenity)
+  : true;
+
       let priceMatch = true;
 
       if (this.selectedPriceRange) {
@@ -180,7 +195,7 @@ bookNow(flatId: number) {
       ? !flat.is_booked   // Change to flat.status !== 'booked' if using status column
       : true;
 
-      return towerMatch && locationMatch && priceMatch && flatTypeMatch && flatNumberMatch && availabilityMatch;
+      return towerMatch && locationMatch && priceMatch && flatTypeMatch && flatNumberMatch && availabilityMatch && flatFloorMatch && amenityMatch;
 
     });
     
