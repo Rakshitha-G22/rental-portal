@@ -6,16 +6,12 @@ from ..models import User
 
 auth_bp = Blueprint("auth_bp", __name__)
 
-
 # =============================
 # REGISTER
 # =============================
-@auth_bp.route("/register", methods=["POST", "OPTIONS"])
+@auth_bp.route("/register", methods=["POST"]) # REMOVE "OPTIONS" here
 def register():
-
-    if request.method == "OPTIONS":
-        return jsonify({}), 200
-
+    # flask-cors handles OPTIONS automatically, so we remove the manual check
     data = request.get_json()
 
     name = data.get("name")
@@ -42,16 +38,11 @@ def register():
 
     return jsonify({"msg": "Registration successful"}), 201
 
-
 # =============================
 # LOGIN
 # =============================
-@auth_bp.route("/login", methods=["POST", "OPTIONS"])
+@auth_bp.route("/login", methods=["POST"]) # REMOVE "OPTIONS" here
 def login():
-
-    if request.method == "OPTIONS":
-        return jsonify({}), 200
-
     try:
         data = request.get_json()
 
@@ -69,6 +60,7 @@ def login():
         if not check_password_hash(user.password, password):
             return jsonify({"msg": "Invalid credentials"}), 401
 
+        # Identity must be a string for JWT
         token = create_access_token(identity=str(user.id))
 
         return jsonify({
