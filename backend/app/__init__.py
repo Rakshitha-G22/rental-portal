@@ -7,20 +7,31 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager
 from flask_migrate import Migrate
 
+# Initialize extensions outside create_app
 db = SQLAlchemy()
 jwt = JWTManager()
 
+# ==========================================
+# RAILWAY PATH CALCULATIONS
+# ==========================================
+# This finds the absolute path to your frontend files
+basedir = os.path.abspath(os.path.dirname(__file__))
+static_dir = os.path.join(basedir, "..", "frontend", "user-app", "dist", "user-app", "browser")
+
 def create_app():
-    app = Flask(__name__, static_folder="../frontend/user-app/dist/user-app/browser", static_url_path="")
+    # Use the calculated static_dir to serve Angular
+    app = Flask(__name__, static_folder=static_dir, static_url_path="")
     logging.basicConfig(level=logging.DEBUG)
 
-    # 1. ORGANIZE ORIGINS
+    # ==========================
+    # CORS CONFIGURATION
+    # ==========================
     allowed_origins = [
         "http://localhost:4200",
         "https://perpetual-miracle-production-e3d3.up.railway.app"
     ]
 
-    # 2. SINGLE CORS INITIALIZATION (Do not call it twice)
+    # Handled globally by flask-cors (Automatic OPTIONS handling)
     CORS(
         app, 
         resources={r"/api/*": {"origins": allowed_origins}},
@@ -30,31 +41,32 @@ def create_app():
     )
 
     # ==========================
-    # CONFIG & EXTENSIONS
+    # APP CONFIG
     # ==========================
-    app.config.from_object("config.Config")
+    # JWT
     app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY", "rental-portal-super-secure-jwt-secret-key")
     app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=5)
 
+    # DATABASE
     db_url = os.getenv("DATABASE_URL")
     if not db_url:
+        # Local fallback
         db_url = "postgresql://postgres:Rakshu%40123@localhost:5432/rental-portal"
+    
+    # Fix for Railway/Heroku postgres prefix
     if db_url and db_url.startswith("postgres://"):
         db_url = db_url.replace("postgres://", "postgresql://", 1)
     
     app.config["SQLALCHEMY_DATABASE_URI"] = db_url
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
+    # Initialize Extensions
     db.init_app(app)
     jwt.init_app(app)
     Migrate(app, db)
 
-    # NOTE: I removed your manual @app.before_request for OPTIONS. 
-    # flask_cors handles this automatically. Manual handling often causes 
-    # "Multiple Allow-Origin" header errors which browsers also block.
-
     # ==========================
-    # ROUTES & BLUEPRINTS
+    # REGISTER BLUEPRINTS
     # ==========================
     from .routes.auth import auth_bp
     from .routes.flats import flats_bp
@@ -76,8 +88,11 @@ def create_app():
     @app.route("/", defaults={"path": ""})
     @app.route("/<path:path>")
     def serve_angular(path):
+        # 1. Check if the requested file exists in the static folder
         if path != "" and os.path.exists(os.path.join(app.static_folder, path)):
             return app.send_static_file(path)
+        
+        # 2. Otherwise, serve index.html (Handles Angular Routing)
         return app.send_static_file("index.html")
 
     return app
