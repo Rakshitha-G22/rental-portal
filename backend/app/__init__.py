@@ -1,25 +1,24 @@
 import os
 import logging
 from datetime import timedelta
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager
 from flask_migrate import Migrate
 
-# Initialize extensions outside create_app
+# Initialize extensions
 db = SQLAlchemy()
 jwt = JWTManager()
 
 # ==========================================
-# RAILWAY PATH CALCULATIONS
+# PATH TO ANGULAR STATIC FILES
 # ==========================================
-# This finds the absolute path to your frontend files
 basedir = os.path.abspath(os.path.dirname(__file__))
 static_dir = os.path.join(basedir, "..", "frontend", "user-app", "dist", "user-app", "browser")
 
 def create_app():
-    # Use the calculated static_dir to serve Angular
+    # Flask app with Angular static folder
     app = Flask(__name__, static_folder=static_dir, static_url_path="")
     logging.basicConfig(level=logging.DEBUG)
 
@@ -31,7 +30,6 @@ def create_app():
         "https://perpetual-miracle-production-e3d3.up.railway.app"
     ]
 
-    # Handled globally by flask-cors (Automatic OPTIONS handling)
     CORS(
         app, 
         resources={r"/api/*": {"origins": allowed_origins}},
@@ -43,24 +41,20 @@ def create_app():
     # ==========================
     # APP CONFIG
     # ==========================
-    # JWT
-    app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY", "rental-portal-super-secure-jwt-secret-key")
+    app.config["JWT_SECRET_KEY"] = os.getenv(
+        "JWT_SECRET_KEY", "rental-portal-super-secure-jwt-secret-key"
+    )
     app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=5)
 
-    # DATABASE
-    db_url = os.getenv("DATABASE_URL")
-    if not db_url:
-        # Local fallback
-        db_url = "postgresql://postgres:Rakshu%40123@localhost:5432/rental-portal"
-    
-    # Fix for Railway/Heroku postgres prefix
-    if db_url and db_url.startswith("postgres://"):
+    db_url = os.getenv("DATABASE_URL") or "postgresql://postgres:Rakshu%40123@localhost:5432/rental-portal"
+    if db_url.startswith("postgres://"):
         db_url = db_url.replace("postgres://", "postgresql://", 1)
-    
     app.config["SQLALCHEMY_DATABASE_URI"] = db_url
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
-    # Initialize Extensions
+    # ==========================
+    # INITIALIZE EXTENSIONS
+    # ==========================
     db.init_app(app)
     jwt.init_app(app)
     Migrate(app, db)
@@ -78,6 +72,9 @@ def create_app():
     app.register_blueprint(admin_bp, url_prefix="/api/admin")
     app.register_blueprint(bookings_bp, url_prefix="/api/bookings")
 
+    # ==========================
+    # TEST API
+    # ==========================
     @app.route("/api/test")
     def test():
         return jsonify({"message": "Backend working", "status": "success"})
@@ -88,11 +85,10 @@ def create_app():
     @app.route("/", defaults={"path": ""})
     @app.route("/<path:path>")
     def serve_angular(path):
-        # 1. Check if the requested file exists in the static folder
+        # Serve requested static file if exists
         if path != "" and os.path.exists(os.path.join(app.static_folder, path)):
             return app.send_static_file(path)
-        
-        # 2. Otherwise, serve index.html (Handles Angular Routing)
+        # Otherwise serve index.html for Angular routing
         return app.send_static_file("index.html")
 
     return app
