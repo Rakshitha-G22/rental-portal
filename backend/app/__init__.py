@@ -13,7 +13,8 @@ jwt = JWTManager()
 
 # Path to your frontend src
 basedir = os.path.abspath(os.path.dirname(__file__))
-static_dir = os.path.join(basedir, "..", "frontend", "user-app", "dist", "user-app")
+# We add "browser" at the end because that's where index.html is
+static_dir = os.path.join(basedir, "..", "frontend", "user-app", "dist", "user-app", "browser")
 app = Flask(__name__, static_folder=static_dir, static_url_path="")
 
 def create_app():
