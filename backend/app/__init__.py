@@ -69,7 +69,7 @@ def create_app():
             r"/api/*": {
                 "origins": [
                     "http://localhost:4200",
-                    "https://rental-portal-full-production.up.railway.app"
+                    "https://perpetual-miracle-production-e3d3.up.railway.app"
                 ],
                 "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
                 "allow_headers": ["Content-Type", "Authorization"]
