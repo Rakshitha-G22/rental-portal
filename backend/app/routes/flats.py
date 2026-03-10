@@ -22,11 +22,13 @@ def get_all_flats():
             if booking and booking.status:
                 booking_status = booking.status.lower()
 
-            amenities_list = (
-                [a.strip() for a in flat.amenities.split(",")]
-                if flat.amenities
-                else []
-            )
+            if isinstance(flat.amenities, list):
+                amenities_list = flat.amenities
+            elif isinstance(flat.amenities, str):
+                amenities_list = [a.strip() for a in flat.amenities.split(",")]
+            else:
+                amenities_list = []
+
 
             flat_list.append({
                 "id": flat.id,
@@ -59,11 +61,13 @@ def get_flat(flat_id):
         if not flat:
             return jsonify({"msg": "Flat not found"}), 404
 
-        amenities_list = (
-            [a.strip() for a in flat.amenities.split(",")]
-            if flat.amenities
-            else []
-        )
+            
+        if isinstance(flat.amenities, list):
+                amenities_list = flat.amenities
+        elif isinstance(flat.amenities, str):
+                amenities_list = [a.strip() for a in flat.amenities.split(",")]
+        else:
+                amenities_list = []
 
         active_booking = Booking.query.filter(
             Booking.flat_id == flat.id,

@@ -88,10 +88,12 @@ def my_bookings():
 
         for booking, flat, user in bookings:
 
-            amenities_list = (
-                [a.strip() for a in flat.amenities.split(",")]
-                if flat.amenities else []
-            )
+            if isinstance(flat.amenities, list):
+                amenities_list = flat.amenities
+            elif isinstance(flat.amenities, str):
+                amenities_list = [a.strip() for a in flat.amenities.split(",")]
+            else:
+                amenities_list = []
 
             result.append({
                 "id": booking.id,
