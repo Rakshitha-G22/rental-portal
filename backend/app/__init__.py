@@ -13,11 +13,10 @@ jwt = JWTManager()
 
 # Path to your frontend src
 basedir = os.path.abspath(os.path.dirname(__file__))
-static_folder = os.path.join(basedir, "..", "frontend", "user-app", "dist", "user-app", "browser")
-app = Flask(__name__, static_folder=static_folder)
+static_dir = os.path.join(basedir, "..", "frontend", "user-app", "dist", "user-app")
+app = Flask(__name__, static_folder=static_dir, static_url_path="")
 
 def create_app():
-    app = Flask(__name__, static_folder=static_folder)
     logging.basicConfig(level=logging.DEBUG)
 
     # ========================== CORS ==========================
