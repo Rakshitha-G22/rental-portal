@@ -5,7 +5,7 @@ import { environment } from 'environments/environment';
 @Injectable({ providedIn: 'root' })
 export class ApiService {
 
-  private BASE_URL = environment.apiUrl; // ✅ REMOVE /api HERE
+  private BASE_URL = "https://rental-portal-production.up.railway.app/api"; // ✅ REMOVE /api HERE
 
   constructor(private http: HttpClient) {}
 
