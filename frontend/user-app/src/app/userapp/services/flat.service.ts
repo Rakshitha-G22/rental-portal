@@ -30,7 +30,7 @@ export class FlatService {
   // Get all flats
   // ===============================
   getAllFlats(): Observable<Flat[]> {
-    return this.http.get<Flat[]>(`${this.apiUrl}/flats/`);
+  return this.http.get<Flat[]>(`${environment.apiUrl}/flats/`);
   }
 
   // ===============================
