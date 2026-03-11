@@ -14,8 +14,8 @@ jwt = JWTManager()
 # Path to your frontend src
 basedir = os.path.abspath(os.path.dirname(__file__))
 # We add "browser" at the end because that's where index.html is
-static_dir = os.path.join(basedir, "..", "frontend", "user-app", "dist", "user-app")
-app = Flask(__name__, static_folder="../frontend/user-app/dist/user-app")
+static_dir = os.path.join(basedir, "..", "frontend", "user-app", "dist", "user-app", "browser")
+app = Flask(__name__, static_folder=static_dir, static_url_path="")
 
 def create_app():
     logging.basicConfig(level=logging.DEBUG)
@@ -59,10 +59,13 @@ def create_app():
 
     @app.route("/")
     def hello():
-        return "Hello World! Backend is running locally."
+        return "Hello World! Backend is running locally.
     
     
-
+    @app.route("/api/test-open")
+    def test_open():
+        
+        return jsonify({"message": "Backend working without login", "status": "success"})
     @app.route("/api/test")
     def test():
         return jsonify({"message": "Backend working", "status": "success"})
@@ -70,10 +73,9 @@ def create_app():
     # ========================== SERVE INDEX.HTML ==========================
     @app.route("/", defaults={"path": ""})
     @app.route("/<path:path>")
-    def serve_frontend(path):
+    def serve_angular(path):
         if path != "" and os.path.exists(os.path.join(app.static_folder, path)):
-            return send_from_directory(app.static_folder, path)
-        else:
-            return send_from_directory(app.static_folder, "index.html")
+            return app.send_static_file(path)
+        return app.send_static_file("index.html")
 
     return app
