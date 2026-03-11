@@ -3,7 +3,8 @@ from flask import Flask
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from flask_sqlalchemy import SQLAlchemy
-from config import Config  # your config file
+from config import Config
+import os  # your config file
 
 # Initialize extensions (without app)
 db = SQLAlchemy()
@@ -22,7 +23,9 @@ def create_app():
     # Initialize extensions with app
     db.init_app(app)
     jwt.init_app(app)
-    CORS(app, resources={r"/api/*": {"origins": "https://perpetual-miracle-production-e3d3.up.railway.app"}})  # enable CORS for all routes
+    allowed_origin = os.environ.get('FRONTEND_URL', 'http://localhost:4200')
+
+    CORS(app, resources={r"/api/*": {"origins": allowed_origin}})
 
     # Register blueprints with url_prefix
     app.register_blueprint(auth_bp, url_prefix="/api/auth")
