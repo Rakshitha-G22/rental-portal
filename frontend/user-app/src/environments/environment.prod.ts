@@ -1,4 +1,6 @@
+// src/environments/environment.prod.ts
 export const environment = {
   production: true,
-  apiUrl: '/api' // Using a relative path fixes the Mixed Content issue permanently
+  // Use the full URL of your Flask backend service
+  apiUrl: 'https://perpetual-miracle-production-e3d3.up.railway.app/api'
 };
