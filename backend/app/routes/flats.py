@@ -2,6 +2,7 @@ from flask import Blueprint, jsonify
 from ..models import Flat, Booking
 from sqlalchemy import func
 from sqlalchemy.orm import joinedload
+from app.models import db, Flat, Booking
 
 flats_bp = Blueprint("flats_bp", __name__)
 
@@ -69,3 +70,22 @@ def get_flat(flat_id):
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+    
+
+
+    
+@flats_bp.route('/seed-data', methods=['POST'])
+def seed_flats():
+    sample_flats = [
+        Flat(title="Cozy Studio in City Center", price=1200, location="Downtown"),
+        Flat(title="Spacious 2-Bedroom Apartment", price=2500, location="Suburbs")
+    ]
+    
+    try:
+        db.session.add_all(sample_flats)
+        db.session.commit()
+        return jsonify({"message": "Database seeded successfully!"}), 201
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 500
+
