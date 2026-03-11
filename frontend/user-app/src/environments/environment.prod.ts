@@ -1,5 +1,6 @@
+// environment.prod.ts
 export const environment = {
   production: true,
-  // This MUST be the backend URL, NOT the frontend URL
-  apiUrl: 'https://rental-portal-production.up.railway.app/api'
+  // This tells the browser: "Use whatever protocol the main page is using"
+  apiUrl: '//rental-portal-production.up.railway.app/api' 
 };
