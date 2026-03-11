@@ -4,7 +4,7 @@ from flask_jwt_extended import JWTManager
 from flask_sqlalchemy import SQLAlchemy
 from config import Config
 import os
-from flask_migrate import Migrate
+# from flask_migrate import Migrate
 
 # Initialize extensions
 db = SQLAlchemy()
@@ -17,7 +17,7 @@ from .routes.flats import flats_bp
 from .routes.admin import admin_bp
 from app.routes.user import user_bp
 
-migrate = Migrate()
+# migrate = Migrate()
 
 def create_app():
     app = Flask(__name__)
@@ -26,7 +26,7 @@ def create_app():
     # Initialize extensions
     db.init_app(app)
     jwt.init_app(app)
-    migrate.init_app(app, db)
+    # migrate.init_app(app, db)
     
     # FIX: Update this to match your live Render Frontend URL
     # CORS will now allow requests from your specific Frontend URL
@@ -47,7 +47,7 @@ def create_app():
     def test_open():
         return "Backend is running!"
     
-    with app.app_context():
-        db.create_all() # This creates all tables from your models automatically
+    # with app.app_context():
+    #     db.create_all() # This creates all tables from your models automatically
 
     return app
