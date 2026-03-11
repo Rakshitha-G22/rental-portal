@@ -2,7 +2,7 @@ from flask import Blueprint, jsonify
 from ..models import Flat, Booking
 from sqlalchemy import func
 
-flats_bp = Blueprint("flats_bp", __name__, url_prefix="/api/flats")
+flats_bp = Blueprint("flats_bp", __name__)
 
 # ================= GET ALL FLATS =================
 @flats_bp.route("/", methods=["GET"])
