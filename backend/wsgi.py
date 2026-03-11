@@ -8,7 +8,6 @@ app = create_app()
 application = app
 
 if __name__ == "__main__":
-    # Use PORT environment variable if provided (Railway/Heroku)
+    # Local development
     port = int(os.environ.get("PORT", 8080))
-    # Only use debug=True for local development
     app.run(host="0.0.0.0", port=port, debug=True)
