@@ -14,7 +14,7 @@ jwt = JWTManager()
 # Path to your frontend src
 basedir = os.path.abspath(os.path.dirname(__file__))
 # We add "browser" at the end because that's where index.html is
-static_dir = os.path.join(basedir, "..", "frontend", "user-app", "dist", "user-app", "browser")
+static_dir = os.path.join(basedir, "..", "frontend", "user-app", "dist", "user-app")
 app = Flask(__name__, static_folder=static_dir, static_url_path="")
 
 def create_app():
@@ -52,6 +52,16 @@ def create_app():
     app.register_blueprint(flats_bp)
     app.register_blueprint(admin_bp, url_prefix="/api/admin")
     app.register_blueprint(bookings_bp, url_prefix="/api/bookings")
+
+    @app.route("/api/test-open")
+    def test_open():
+        return jsonify({"message": "Backend working without login", "status": "success"})
+
+    @app.route("/")
+    def hello():
+        return "Hello World! Backend is running locally."
+    
+    
 
     @app.route("/api/test")
     def test():
