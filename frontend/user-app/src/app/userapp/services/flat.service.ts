@@ -20,24 +20,18 @@ export interface Flat {
   providedIn: 'root'
 })
 export class FlatService {
-
-  // ✅ Base API URL
-  private apiUrl = environment.apiUrl;
+  // Ensure your environment.apiUrl is set to 'https://rental-portal-backend-hy1p.onrender.com'
+  private baseUrl = environment.apiUrl.replace(/\/$/, ""); 
 
   constructor(private http: HttpClient) {}
 
-  // ===============================
-  // Get all flats
-  // ===============================
   getAllFlats(): Observable<Flat[]> {
-  return this.http.get<Flat[]>(`${environment.apiUrl}/flats/`);
+    // This will correctly resolve to: .../flats/
+    return this.http.get<Flat[]>(`${this.baseUrl}/flats/`);
   }
 
-  // ===============================
-  // Get flat by ID
-  // ===============================
   getFlatById(id: number): Observable<Flat> {
-    return this.http.get<Flat>(`${this.apiUrl}/flats/${id}`);
+    // This will correctly resolve to: .../flats/123
+    return this.http.get<Flat>(`${this.baseUrl}/flats/${id}`);
   }
-
 }
