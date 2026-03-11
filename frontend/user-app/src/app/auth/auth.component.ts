@@ -26,7 +26,7 @@ export class AuthComponent {
     password: ''
   };
 
-  private BASE_URL = "https://rental-portal-production.up.railway.app/api";
+  BASE_URL = environment.apiUrl;
 
   constructor(
     private http: HttpClient,
