@@ -9,12 +9,15 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt .
-
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
+# Copy and setup entrypoint
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
 ENV PORT=8080
 
-# Use this if you want to be explicit about the object named 'application'
-CMD ["gunicorn", "--bind", "0.0.0.0:8080", "wsgi:application"]
+# This is the only CMD needed
+CMD ["/entrypoint.sh"]
