@@ -3,7 +3,7 @@ from flask import Flask
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from flask_sqlalchemy import SQLAlchemy
-from .config import Config  # your config file
+from config import Config  # your config file
 
 # Initialize extensions (without app)
 db = SQLAlchemy()
@@ -11,7 +11,7 @@ jwt = JWTManager()
 
 # Import blueprints from routes
 from .routes.auth import auth_bp
-from .routes.booking import booking_bp
+from .routes.bookings import bookings_bp
 from .routes.flats import flats_bp
 from .routes.admin import admin_bp
 
@@ -26,7 +26,7 @@ def create_app():
 
     # Register blueprints with url_prefix
     app.register_blueprint(auth_bp, url_prefix="/api/auth")
-    app.register_blueprint(booking_bp, url_prefix="/api/booking")
+    app.register_blueprint(bookings_bp, url_prefix="/api/bookings")
     app.register_blueprint(flats_bp, url_prefix="/api/flats")
     app.register_blueprint(admin_bp, url_prefix="/api/admin")
 
