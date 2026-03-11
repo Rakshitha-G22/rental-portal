@@ -25,7 +25,8 @@ def create_app():
         "http://localhost:4200",
         "https://perpetual-miracle-production-e3d3.up.railway.app"
     ]
-    CORS(app, resources={r"/api/*": {"origins": allowed_origins}}, supports_credentials=True)
+    # CORS(app, resources={r"/api/*": {"origins": allowed_origins}}, supports_credentials=True)
+    CORS(app)
 
     # ========================== JWT ==========================
     app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY", "rental-portal-super-secure-jwt-secret-key")
@@ -77,5 +78,9 @@ def create_app():
         if path != "" and os.path.exists(os.path.join(app.static_folder, path)):
             return app.send_static_file(path)
         return app.send_static_file("index.html")
+    
+    @app.route('/api/flats')
+    def flats():
+        return {"message": "Flats endpoint working!"}
 
     return app
