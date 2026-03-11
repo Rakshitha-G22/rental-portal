@@ -74,7 +74,7 @@ def get_flat(flat_id):
 
 
     
-@flats_bp.route('/seed-data', methods=['POST'])
+@flats_bp.route('/seed-data', methods=['GET', 'POST'])
 def seed_flats():
     sample_flats = [
         Flat(title="Cozy Studio in City Center", price=1200, location="Downtown"),
