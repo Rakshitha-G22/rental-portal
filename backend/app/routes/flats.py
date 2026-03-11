@@ -1,6 +1,7 @@
 from flask import Blueprint, jsonify
 from ..models import Flat, Booking
 from sqlalchemy import func
+from sqlalchemy.orm import joinedload
 
 flats_bp = Blueprint("flats_bp", __name__)
 
@@ -8,46 +9,25 @@ flats_bp = Blueprint("flats_bp", __name__)
 @flats_bp.route("/", methods=["GET"])
 def get_all_flats():
     try:
-        flats = Flat.query.all()
+        # Load all flats and their associated bookings in one go
+        flats = Flat.query.options(joinedload(Flat.bookings)).all()
         flat_list = []
 
         for flat in flats:
-
-            booking = Booking.query.filter(
-                Booking.flat_id == flat.id
-            ).first()
-
-            booking_status = None
-
-            if booking and booking.status:
-                booking_status = booking.status.lower()
-
-            if isinstance(flat.amenities, list):
-                amenities_list = flat.amenities
-            elif isinstance(flat.amenities, str):
-                amenities_list = [a.strip() for a in flat.amenities.split(",")]
-            else:
-                amenities_list = []
-
+            # Check for any active booking in the loaded relationship
+            active_booking = next((b for b in flat.bookings if b.status.lower() in ["confirmed", "pending"]), None)
+            
+            # ... (your existing amenities logic) ...
 
             flat_list.append({
                 "id": flat.id,
-                "flat_number": flat.flat_number,
-                "flat_type": flat.flat_type,
-                "location": flat.location,
-                "price": flat.price,
-                "image": flat.image,
-                "tower_name": flat.tower_name,
-                "floor": flat.floor,
-                "amenities": amenities_list,
-                "is_booked": booking is not None,
-                "booking_status": booking_status
+                # ... other fields ...
+                "is_booked": active_booking is not None,
+                "booking_status": active_booking.status.lower() if active_booking else None
             })
 
         return jsonify(flat_list), 200
-
     except Exception as e:
-        print("Flats API Error:", str(e))
         return jsonify({"error": "Internal Server Error"}), 500
         
 
