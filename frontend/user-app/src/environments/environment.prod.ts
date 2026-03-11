@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://rental-portal-production.up.railway.app/api'
+  apiUrl: '/api' // Using a relative path fixes the Mixed Content issue permanently
 };
