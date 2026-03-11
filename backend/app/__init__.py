@@ -15,6 +15,8 @@ from .routes.auth import auth_bp
 from .routes.bookings import bookings_bp
 from .routes.flats import flats_bp
 from .routes.admin import admin_bp
+from app.routes.user import user_bp
+
 
 def create_app():
     app = Flask(__name__)
@@ -31,6 +33,7 @@ def create_app():
     app.register_blueprint(auth_bp, url_prefix="/api/auth")
     app.register_blueprint(bookings_bp, url_prefix="/api/bookings")
     app.register_blueprint(flats_bp, url_prefix="/api/flats")
+    app.register_blueprint(user_bp)
     app.register_blueprint(admin_bp, url_prefix="/api/admin")
 
     # Optional: a simple test route

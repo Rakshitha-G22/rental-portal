@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from 'environments/environment';
+import { map } from 'rxjs/operators';
 
 @Injectable({ providedIn: 'root' })
 export class ApiService {
@@ -19,9 +20,12 @@ export class ApiService {
 
   // ================= FLATS =================
   getFlats() {
-    return this.http.get(`${this.BASE_URL}/flats`);
-  }
-
+  return this.http.get(`${this.BASE_URL}/flats`).pipe(
+    // Replace 'flats' with the actual key you see in your Response tab
+    map((response: any) => response.flats || response) 
+  );
+ }
+ 
   // ================= BOOKINGS =================
   confirmBooking(flatId: number, token: string) {
     return this.http.post(
