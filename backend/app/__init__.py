@@ -31,7 +31,7 @@ def create_app():
     # FIX: Update this to match your live Render Frontend URL
     # CORS will now allow requests from your specific Frontend URL
     frontend_url = 'https://rental-portal-2.onrender.com'
-    CORS(app, resources={r"/*": {"origins": frontend_url}})
+    CORS(app, resources={r"/*": {"origins": "*"}})
 
     # Register blueprints with url_prefix
     # These prefixes match the structure: /api/ + [prefix]

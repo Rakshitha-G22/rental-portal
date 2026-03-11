@@ -1,9 +1,4 @@
 #!/bin/sh
-# Set the app factory using a compatible syntax
-export FLASK_APP="app:create_app()"
-
-# Try to run migrations (Optional, remove if it continues to fail)
-flask db upgrade
-
-# Start Gunicorn
-exec gunicorn --bind 0.0.0.0:8080 wsgi:application
+# No migration commands needed here because db.create_all() is in __init__.py
+# Start Gunicorn directly
+exec gunicorn --bind 0.0.0.0:8080 "app:create_app()"
