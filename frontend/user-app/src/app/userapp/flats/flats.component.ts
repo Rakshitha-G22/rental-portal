@@ -63,32 +63,30 @@ ngOnInit(): void {
 }
   // ⭐ Load Flats From API
   loadFlats() {
+  this.flatService.getAllFlats().subscribe({
+    next: (response: any) => {
+      // If response is { "flats": [...] }, extract it:
+      const data = response.flats || response; 
 
-    this.flatService.getAllFlats().subscribe({
-
-      next: (data: any[]) => {
-
-        this.flats = data;
-        this.allFlats = data;
-
-        this.towers = [...new Set(data.map(f => f.tower_name))];
-        this.locations = [...new Set(data.map(f => f.location))];
-        this.flatTypes = [...new Set(data.map(f => f.flat_type))];
-        this.flatNumbers = [...new Set(data.map(f => f.flat_number))];
-        this.flatFloors = [...new Set(data.map(f => f.floor))];
-        this.amenitiesList = [
-  ...new Set(data.flatMap(f => f.amenities || []))
-];
-
-        this.loading = false;
-      },
-
-      error: () => {
-        this.errorMsg = "Failed to load flats";
-        this.loading = false;
+      if (!Array.isArray(data)) {
+        console.error("Data is not an array:", data);
+        this.errorMsg = "Invalid data format received";
+        return;
       }
 
-    });
+      this.flats = data;
+      this.allFlats = data;
+      
+      // ... your existing logic remains the same
+      this.towers = [...new Set(data.map(f => f.tower_name))];
+      // ... etc
+    },
+    error: (err) => {
+      console.error(err);
+      this.errorMsg = "Failed to load flats";
+      this.loading = false;
+    }
+  });
 
   }
   getAmenitiesText(amenities: any): string {
