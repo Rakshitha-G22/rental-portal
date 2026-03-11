@@ -16,4 +16,5 @@ COPY . .
 
 ENV PORT=8080
 
-CMD ["gunicorn", "--bind", "0.0.0.0:8080", "wsgi:app"]
+# Use this if you want to be explicit about the object named 'application'
+CMD ["gunicorn", "--bind", "0.0.0.0:8080", "wsgi:application"]
