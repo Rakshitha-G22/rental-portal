@@ -25,9 +25,10 @@ def create_app():
     # Initialize extensions with app
     db.init_app(app)
     jwt.init_app(app)
-    allowed_origin = os.environ.get('FRONTEND_URL', 'http://localhost:4200')
-
-    CORS(app, resources={r"/api/*": {"origins": allowed_origin}})
+    frontend_url = 'https://perpetual-miracle-production-e3d3.up.railway.app'
+    
+    # Enable CORS for your API routes specifically
+    CORS(app, resources={r"/api/*": {"origins": frontend_url}})
 
     # Register blueprints with url_prefix
     app.register_blueprint(auth_bp, url_prefix="/api/auth")
