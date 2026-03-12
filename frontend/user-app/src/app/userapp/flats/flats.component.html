@@ -3,9 +3,9 @@
     <h1 class="text-4xl font-bold mb-4">Available Flats</h1>
 
     <div class="flex gap-4">
-    <button routerLink="/authForm" class="bg-gray-800 text-white px-5 py-2 rounded hover:bg-gray-900 transition">
-      Login
-    </button>
+<button (click)="goToLogin()" class="bg-gray-800 text-white px-5 py-2 rounded hover:bg-gray-900 transition">
+  Login
+</button>
 
     <div class="flex justify-end">
       <button *ngIf="isLoggedIn" routerLink="/my-bookings" class="bg-blue-600 text-white px-6 py-3 rounded hover:bg-blue-700 transition">

@@ -61,6 +61,10 @@ ngOnInit(): void {
 
   this.loadFlats(); // load flats
 }
+
+goToLogin() {
+  this.router.navigate(['/auth']); // 3. Use the method
+}
   // ⭐ Load Flats From API
   loadFlats() {
   this.loading = true; // Set loading to true at start
