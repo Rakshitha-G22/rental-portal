@@ -3,6 +3,7 @@ from ..models import Flat, Booking
 from sqlalchemy import func
 from sqlalchemy.orm import joinedload
 from app.models import db, Flat, Booking
+import json
 
 flats_bp = Blueprint("flats_bp", __name__)
 
@@ -53,14 +54,15 @@ def get_flat(flat_id):
             return jsonify({"msg": "Flat not found"}), 404
 
             
-        if isinstance(flat.amenities, list):
-                amenities_list = flat.amenities
-        elif isinstance(flat.amenities, str):
+        if isinstance(flat.amenities, str):
+            try:
+                amenities_list = json.loads(flat.amenities)
+            except:
                 amenities_list = [a.strip() for a in flat.amenities.split(",")]
         else:
-                amenities_list = []
+            amenities_list = flat.amenities if flat.amenities else []
 
-        active_booking = Booking.query.filter(
+            active_booking = Booking.query.filter(
             Booking.flat_id == flat.id,
             func.lower(Booking.status).in_(["approved", "pending"])
         ).first()
