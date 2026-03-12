@@ -87,8 +87,21 @@
   </div>
 
   <!-- Flats Grid -->
-  <div *ngIf="flats.length > 0 && !loading" 
-       class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+<div *ngIf="flats && flats.length > 0; else noData" 
+     class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+  
+  <div *ngFor="let flat of flats" class="bg-white ...">
+    <h2>🏠 Flat {{ flat?.flat_number }}</h2>
+    </div>
+</div>
+
+<ng-template #noData>
+  <div class="text-center text-gray-500 text-lg py-10">
+    <p>No flats available at the moment.</p>
+  </div>
+</ng-template>
+
+
 
      <div *ngFor="let flat of flats" 
      class="bg-white shadow-xl rounded-2xl overflow-hidden flex flex-col h-full hover:shadow-2xl transition">

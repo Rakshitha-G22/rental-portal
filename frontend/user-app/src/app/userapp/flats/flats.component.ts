@@ -67,6 +67,9 @@ ngOnInit(): void {
   this.flatService.getAllFlats().subscribe({
     next: (data: any) => {
       console.log("DEBUG: Data received from API:", data);
+      this.allFlats = [...data];
+      this.flats = [...data];
+      console.log("DEBUG: Current flats array length:", this.flats.length);
       // Since your Flask return is a direct array [...], 'data' is already the array
       if (!Array.isArray(data)) {
         console.error("Data is not an array:", data);
