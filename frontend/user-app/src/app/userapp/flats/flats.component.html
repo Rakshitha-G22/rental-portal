@@ -6,7 +6,7 @@
     <button routerLink="/login" class="bg-gray-800 text-white px-5 py-2 rounded hover:bg-gray-900 transition">
       Login
     </button>
-    
+
     <div class="flex justify-end">
       <button *ngIf="isLoggedIn" routerLink="/my-bookings" class="bg-blue-600 text-white px-6 py-3 rounded hover:bg-blue-700 transition">
         View My Bookings
@@ -57,10 +57,22 @@
         </div>
 
         <div class="mt-auto">
-          <button *ngIf="flat?.booking_status === null" (click)="bookNow(flat.id)" class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded transition w-full">Book Now</button>
-          <button *ngIf="flat?.booking_status === 'pending'" class="bg-yellow-600 text-white px-6 py-3 rounded cursor-not-allowed w-full">Pending Approval</button>
-          <button *ngIf="flat?.booking_status === 'approved'" class="bg-red-600 text-white px-6 py-3 rounded cursor-not-allowed w-full">Already Booked</button>
-        </div>
+  <button *ngIf="!flat?.booking_status" 
+          (click)="bookNow(flat.id)" 
+          class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded transition w-full">
+    Book Now
+  </button>
+
+  <button *ngIf="flat?.booking_status === 'pending'" 
+          class="bg-yellow-600 text-white px-6 py-3 rounded cursor-not-allowed w-full">
+    Pending Approval
+  </button>
+
+  <button *ngIf="flat?.booking_status === 'approved'" 
+          class="bg-red-600 text-white px-6 py-3 rounded cursor-not-allowed w-full">
+    Already Booked
+  </button>
+</div>
       </div>
     </div>
   </div>
