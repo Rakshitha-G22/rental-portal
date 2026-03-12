@@ -83,18 +83,11 @@ def get_all_flats():
     result = []
     for f in flats:
         # Find the active booking (approved or pending)
-        active_booking = Booking.query.filter_by(flat_id=f.id).filter(
-            Booking.status.in_(['pending', 'approved'])
-        ).first()
+            active_booking = Booking.query.filter_by(flat_id=f.id)\
+            .order_by(Booking.id.desc())\
+            .first()
         
-        # Determine the current status
-        status = active_booking.status if active_booking else None
-        
-        # Sync the flat's boolean with the status
-        f.is_booked = (status == 'approved')
-        db.session.commit()
-        
-        result.append({
+    result.append({
             "id": f.id,
             "flat_number": f.flat_number,
 
@@ -106,7 +99,7 @@ def get_all_flats():
             "image": f.image,
             "is_booked": f.is_booked,
             "amenities": f.amenities if isinstance(f.amenities, list) else [],
-            "booking_status": status
+            "booking_status": active_booking.status if active_booking else None
         })
     return jsonify(result), 200
 
@@ -206,22 +199,21 @@ def get_all_bookings():
 @admin_bp.route('/booking/<int:id>', methods=['PUT'])
 @admin_only
 def update_booking_status(id):
-
     booking = Booking.query.get_or_404(id)
-
     data = request.get_json() or {}
     status = data.get("status")
 
     if status:
-
-        booking.status = status.lower()
+        # Ensure the status is set to the correct string
+        booking.status = status.lower() 
 
         if status.lower() == "approved":
             flat = Flat.query.get(booking.flat_id)
-            flat.is_booked = True
-
+            if flat:
+                flat.is_booked = True
+                db.session.add(flat)
+    
     db.session.commit()
-
     return jsonify({"message": "Status updated"}), 200
 
 
