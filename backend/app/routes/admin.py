@@ -76,23 +76,6 @@ def add_flat():
 # GET ALL FLATS
 # =============================
 
-@admin_bp.route('/flats', methods=['GET'])
-def get_all_flats():
-    flats = Flat.query.all()
-    result = []
-    for f in flats:
-        active_booking = Booking.query.filter_by(flat_id=f.id).filter(
-            Booking.status.in_(['pending', 'approved'])
-        ).first()
-        result.append({
-            "id": f.id,
-
-            "is_booked": f.is_booked,
-            "amenities": f.amenities if isinstance(f.amenities, list) else [],
-            "booking_status": active_booking.status if active_booking else None
-        })
-
-    return jsonify(result), 200
 
 @admin_bp.route('/flats', methods=['GET'])
 def get_all_flats():
