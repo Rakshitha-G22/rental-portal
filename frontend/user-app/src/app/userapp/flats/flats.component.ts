@@ -70,7 +70,7 @@ goToLogin() {
   this.loading = true; // Set loading to true at start
   this.flatService.getAllFlats().subscribe({
     next: (data: any) => {
-      console.log("DEBUG: Data received from API:", data);
+      console.log("DEBUG: First flat data:", this.flats[0]);
       this.allFlats = [...data];
       this.flats = [...data];
       console.log("DEBUG: Current flats array length:", this.flats.length);

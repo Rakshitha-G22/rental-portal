@@ -36,7 +36,7 @@
   <div *ngIf="loading" class="text-center text-gray-500 py-10">Loading flats...</div>
   <div *ngIf="errorMsg" class="text-center text-red-500 py-10">{{ errorMsg }}</div>
 
-  <div *ngIf="flats && flats.length > 0; else noData" 
+  <div *ngIf="flats && flats.length > 0" 
        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
     
     <div *ngFor="let flat of flats" 
@@ -73,9 +73,6 @@
     Already Booked
   </button>
 </div>
-      </div>
-    </div>
-  </div>
 
   <ng-template #noData>
     <div class="text-center text-gray-500 text-lg py-10">No flats available at the moment.</div>
