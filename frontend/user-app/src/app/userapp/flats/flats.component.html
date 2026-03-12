@@ -76,21 +76,21 @@
 
 
 <div class="mt-auto">
-  <button 
-    (click)="bookNow(flat.id)"
-    [disabled]="flat?.booking_status === 'approved' || flat?.booking_status === 'pending'"
-    class="text-white px-6 py-3 rounded w-full transition duration-300"
-    [ngClass]="{
-      'bg-green-600 hover:bg-green-700': !flat?.booking_status,
-      'bg-yellow-600 cursor-not-allowed': flat?.booking_status === 'pending',
-      'bg-red-600 cursor-not-allowed': flat?.booking_status === 'approved'
-    }"
-  >
-    {{ 
-      flat?.booking_status === 'pending' ? 'Pending Approval' : 
-      flat?.booking_status === 'approved' ? 'Already Booked' : 
-      'Book Now' 
-    }}
+  <button *ngIf="flat?.is_booked" 
+          class="bg-red-600 text-white px-6 py-3 rounded cursor-not-allowed w-full">
+    Already Booked
+  </button>
+
+  <button *ngIf="!flat?.is_booked" 
+          (click)="bookNow(flat.id)" 
+          class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded transition w-full">
+    Book Now
+  </button>
+  
+  <button *ngIf="flat?.booking_status === 'pending'" 
+          class="bg-yellow-600 text-white px-6 py-3 rounded cursor-not-allowed w-full">
+    Pending Approval
   </button>
 </div>
+
 

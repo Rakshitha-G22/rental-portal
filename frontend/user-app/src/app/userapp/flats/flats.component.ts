@@ -91,14 +91,17 @@ this.towers = [...new Set(data.map((f: any) => f.tower_name))].filter(Boolean);
 this.locations = [...new Set(data.map((f: any) => f.location))].filter(Boolean);
 this.flatTypes = [...new Set(data.map((f: any) => f.flat_type))].filter(Boolean);
       
-      this.loading = false; // Data is here, stop the spinner
+      this.loading = false;
+       // Data is here, stop the spinner
     },
     error: (err) => {
       console.error(err);
       this.errorMsg = "Failed to load flats from Database";
       this.loading = false;
+
     }
   });
+  
 }
   getAmenitiesText(amenities: any): string {
   if (!amenities) return 'Not specified';
