@@ -58,8 +58,9 @@ export class FlatsComponent implements OnInit {
 ngOnInit(): void {
   const token = localStorage.getItem('access_token');
   this.isLoggedIn = !!token;
-
-  this.loadFlats(); // load flats
+  setInterval(() => {
+    this.loadFlats();
+  }, 5000); // load flats
 }
 
 goToLogin() {
