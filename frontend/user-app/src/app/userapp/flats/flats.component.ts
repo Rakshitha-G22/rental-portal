@@ -94,11 +94,26 @@ this.flatTypes = [...new Set(data.map((f: any) => f.flat_type))].filter(Boolean)
   getAmenitiesText(amenities: any): string {
   if (!amenities) return 'Not specified';
 
+  // 1. If it's already a proper Array
   if (Array.isArray(amenities)) {
-    return amenities.length ? amenities.join(', ') : 'Not specified';
+    return amenities.join(', ');
   }
 
-  return amenities;
+  // 2. If it's a string that looks like "["Pool", "Gym"]"
+  if (typeof amenities === 'string') {
+    try {
+      // Try to parse it into an array
+      const parsed = JSON.parse(amenities);
+      if (Array.isArray(parsed)) {
+        return parsed.join(', ');
+      }
+    } catch (e) {
+      // If it's just a normal string like "Pool, Gym", return it
+      return amenities;
+    }
+  }
+
+  return 'Not specified';
 }
 
   
