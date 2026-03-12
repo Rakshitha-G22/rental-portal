@@ -60,7 +60,7 @@ ngOnInit(): void {
   this.isLoggedIn = !!token;
   setInterval(() => {
     this.loadFlats();
-  }, 5000); // load flats
+  }, 1000); // load flats
 }
 
 goToLogin() {

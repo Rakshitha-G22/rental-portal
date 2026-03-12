@@ -125,48 +125,25 @@ def my_bookings():
 @bookings_bp.route("/<int:booking_id>", methods=["DELETE"])
 @jwt_required()
 def cancel_booking(booking_id):
-
     try:
-        # =============================
-        # DEBUG JWT USER
-        # =============================
         user_id = get_jwt_identity()
-        # print("JWT USER ID ➜", user_id)
-
-        # =============================
-        # FETCH BOOKING
-        # =============================
         booking = Booking.query.get(booking_id)
 
-        # print("REQUESTED BOOKING ID ➜", booking_id)
-
-        # =============================
-        # CHECK BOOKING EXISTS
-        # =============================
         if not booking:
-            # print("BOOKING STATUS ➜ NOT FOUND")
             return jsonify({"error": "Booking not found"}), 404
 
-        # print("BOOKING OWNER USER ID ➜", booking.user_id)
-
-        # =============================
-        # AUTH CHECK
-        # =============================
         if int(booking.user_id) != int(user_id):
-            # print("AUTH RESULT ➜ FORBIDDEN (User mismatch)")
-            return jsonify({
-                "error": "Unauthorized access",
-                "jwt_user": user_id,
-                "booking_owner": booking.user_id
-            }), 403
+            return jsonify({"error": "Unauthorized access"}), 403
 
-        # =============================
-        # DELETE BOOKING
-        # =============================
+        # --- FIX: Mark the flat as available before deleting the booking ---
+        flat = Flat.query.get(booking.flat_id)
+        if flat:
+            flat.is_booked = False  # Reset the flat availability
+            db.session.add(flat)
+        # -------------------------------------------------------------------
+
         db.session.delete(booking)
         db.session.commit()
-
-        # print("BOOKING STATUS ➜ DELETED SUCCESSFULLY")
 
         return jsonify({
             "message": "Booking cancelled successfully",
@@ -174,12 +151,8 @@ def cancel_booking(booking_id):
         }), 200
 
     except Exception as e:
-        # print("CANCEL BOOKING ERROR ➜", str(e))
-        return jsonify({
-            "error": "Server error",
-            "details": str(e)
-        }), 500
-
+        db.session.rollback() # Always rollback on error
+        return jsonify({"error": "Server error", "details": str(e)}), 500
 
 # =====================================================
 # ✅ DOWNLOAD RECEIPT

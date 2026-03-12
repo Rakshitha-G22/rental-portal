@@ -86,7 +86,35 @@ def get_all_flats():
         ).first()
         result.append({
             "id": f.id,
+
+            "is_booked": f.is_booked,
+            "amenities": f.amenities if isinstance(f.amenities, list) else [],
+            "booking_status": active_booking.status if active_booking else None
+        })
+
+    return jsonify(result), 200
+
+@admin_bp.route('/flats', methods=['GET'])
+def get_all_flats():
+    flats = Flat.query.all()
+    result = []
+    for f in flats:
+        # Find the active booking (approved or pending)
+        active_booking = Booking.query.filter_by(flat_id=f.id).filter(
+            Booking.status.in_(['pending', 'approved'])
+        ).first()
+        
+        # Determine the current status
+        status = active_booking.status if active_booking else None
+        
+        # Sync the flat's boolean with the status
+        f.is_booked = (status == 'approved')
+        db.session.commit()
+        
+        result.append({
+            "id": f.id,
             "flat_number": f.flat_number,
+
             "flat_type": f.flat_type,
             "tower_name": f.tower_name,
             "location": f.location,
@@ -95,9 +123,8 @@ def get_all_flats():
             "image": f.image,
             "is_booked": f.is_booked,
             "amenities": f.amenities if isinstance(f.amenities, list) else [],
-            "booking_status": active_booking.status if active_booking else None
+            "booking_status": status
         })
-
     return jsonify(result), 200
 
 
