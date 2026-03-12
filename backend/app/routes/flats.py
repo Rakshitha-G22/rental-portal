@@ -76,36 +76,36 @@ def get_flat(flat_id):
     
 @flats_bp.route('/seed-data', methods=['POST'])
 def seed_flats():
+    sample_flats = [
+        Flat(
+            flat_number="101-A",
+            flat_type="Studio",
+            location="Downtown Manhattan",
+            price=1200.0,
+            tower_name="Alpha",
+            floor=1,
+            image="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267",
+            amenities=["WiFi", "Air Conditioning", "Kitchenette"],
+            is_booked=False
+        ),
+        Flat(
+            flat_number="502-B",
+            flat_type="2-Bedroom",
+            location="Brooklyn Heights",
+            price=2800.0,
+            tower_name="Bravo",
+            floor=5,
+            image="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688",
+            amenities=["Balcony", "Gym Access", "Parking", "Dishwasher"],
+            is_booked=False
+        )
+    ]
+    
     try:
-        # 1. Create instances that match your actual Model columns
-        sample_flats = [
-            Flat(
-                flat_number="101", 
-                flat_type="Studio", 
-                location="Downtown", 
-                price=1200, 
-                tower_name="A", 
-                floor=1,
-                amenities="WiFi, AC"
-            ),
-            Flat(
-                flat_number="202", 
-                flat_type="2BHK", 
-                location="Suburbs", 
-                price=2500, 
-                tower_name="B", 
-                floor=2,
-                amenities="Parking, Gym"
-            )
-        ]
-        
-        # 2. Add to session and commit
         db.session.add_all(sample_flats)
         db.session.commit()
-        
-        return jsonify({"message": "Database seeded successfully!"}), 201
-        
+        return jsonify({"message": "Database seeded successfully!", "count": len(sample_flats)}), 201
     except Exception as e:
         db.session.rollback()
-        # This helps us see the REAL error in Postman
+        # This will return the specific database error to Postman
         return jsonify({"error": str(e)}), 500
