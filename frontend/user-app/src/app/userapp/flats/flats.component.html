@@ -76,16 +76,20 @@
 
 
 <div class="mt-auto">
-  <button *ngIf="flat?.is_booked" 
+  <div class="mt-auto">
+  <p class="text-xs text-gray-400">Status Value: {{ flat.is_booked }}</p>
+
+  <button *ngIf="flat.is_booked === true" 
           class="bg-red-600 text-white px-6 py-3 rounded cursor-not-allowed w-full">
     Already Booked
   </button>
 
-  <button *ngIf="!flat?.is_booked" 
+  <button *ngIf="flat.is_booked === false" 
           (click)="bookNow(flat.id)" 
           class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded transition w-full">
     Book Now
   </button>
+</div>
   
   <button *ngIf="flat?.booking_status === 'pending'" 
           class="bg-yellow-600 text-white px-6 py-3 rounded cursor-not-allowed w-full">
