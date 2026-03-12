@@ -3,6 +3,7 @@ from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from flask_sqlalchemy import SQLAlchemy
 from config import Config
+from flask import Blueprint, request, jsonify
 import os
 # from flask_migrate import Migrate
 
@@ -35,6 +36,11 @@ def create_app():
         "http://localhost:4200"]
     
     CORS(app, resources={r"/*": {"origins": allowed_origins}})
+
+    @app.before_request
+    def handle_preflight():
+        if request.method == "OPTIONS":
+            return '', 200
 
     # Register blueprints with url_prefix
     # These prefixes match the structure: /api/ + [prefix]
