@@ -44,7 +44,7 @@ def create_app():
 
     # Register blueprints with url_prefix
     # These prefixes match the structure: /api/ + [prefix]
-    app.register_blueprint(auth_bp, url_prefix="/api/auth")
+    app.register_blueprint(auth_bp, url_prefix="/auth")
     app.register_blueprint(bookings_bp, url_prefix="/api/bookings")
     app.register_blueprint(flats_bp, url_prefix="/flats")
     app.register_blueprint(admin_bp, url_prefix="/api/admin")
