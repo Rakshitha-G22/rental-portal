@@ -76,23 +76,23 @@
 
 
 <div class="mt-auto">
-  <div class="mt-auto">
-  <p class="text-xs text-gray-400">Status Value: {{ flat.is_booked }}</p>
+  <p class="text-xs text-gray-500">
+    Raw Value: {{ flat.is_booked }} (Type: {{ typeof flat.is_booked }})
+  </p>
 
   <button *ngIf="flat.is_booked === true" 
-          class="bg-red-600 text-white px-6 py-3 rounded cursor-not-allowed w-full">
+          class="bg-red-600 text-white w-full py-3 rounded">
     Already Booked
   </button>
 
-  <button *ngIf="flat.is_booked === false" 
+  <button *ngIf="flat.is_booked !== true" 
           (click)="bookNow(flat.id)" 
-          class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded transition w-full">
+          class="bg-green-600 text-white w-full py-3 rounded">
     Book Now
   </button>
 </div>
   
-  <button *ngIf="flat?.booking_status === 'pending'" 
-          class="bg-yellow-600 text-white px-6 py-3 rounded cursor-not-allowed w-full">
+  <button *ngIf="flat?.booking_status === 'pending'" >
     Pending Approval
   </button>
 </div>
