@@ -94,7 +94,7 @@ def get_all_flats():
             "price": f.price,
             "image": f.image,
             "is_booked": f.is_booked,
-            "amenities": f.amenities if isinstance(f.amenities, list) else []
+            "amenities": f.amenities if isinstance(f.amenities, list) else [],
             "booking_status": active_booking.status if active_booking else None
         })
 
