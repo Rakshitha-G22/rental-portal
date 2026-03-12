@@ -81,18 +81,23 @@ def get_all_flats():
     flats = Flat.query.all()
     result = []
     for f in flats:
-        # Find if there's an active booking
         active_booking = Booking.query.filter_by(flat_id=f.id).filter(
             Booking.status.in_(['pending', 'approved'])
         ).first()
-        
         result.append({
             "id": f.id,
             "flat_number": f.flat_number,
+            "flat_type": f.flat_type,
             "tower_name": f.tower_name,
-            # ... add other fields ...
+            "location": f.location,
+            "floor": f.floor,
+            "price": f.price,
+            "image": f.image,
+            "is_booked": f.is_booked,
+            "amenities": f.amenities if isinstance(f.amenities, list) else []
             "booking_status": active_booking.status if active_booking else None
         })
+
     return jsonify(result), 200
 
 
