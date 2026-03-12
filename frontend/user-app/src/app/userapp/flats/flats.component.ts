@@ -67,14 +67,9 @@ goToLogin() {
 }
   // ⭐ Load Flats From API
   loadFlats() {
-  this.loading = true; // Set loading to true at start
+  this.loading = true;
   this.flatService.getAllFlats().subscribe({
     next: (data: any) => {
-      console.log("DEBUG: First flat data:", this.flats[0]);
-      this.allFlats = [...data];
-      this.flats = [...data];
-      console.log("DEBUG: Current flats array length:", this.flats.length);
-      // Since your Flask return is a direct array [...], 'data' is already the array
       if (!Array.isArray(data)) {
         console.error("Data is not an array:", data);
         this.errorMsg = "Invalid data format received";
@@ -82,25 +77,30 @@ goToLogin() {
         return;
       }
 
-      this.flats = data;
-      this.allFlats = [...data]; // Create a copy for filtering
+      // 1. Update the master data source
+      this.allFlats = data;
       
-      // Populate your filter dropdowns dynamically from the DB data
-this.towers = [...new Set(data.map((f: any) => f.tower_name))].filter(Boolean);
-this.locations = [...new Set(data.map((f: any) => f.location))].filter(Boolean);
-this.flatTypes = [...new Set(data.map((f: any) => f.flat_type))].filter(Boolean);
-      
+      // 2. Re-apply existing filters to the new data
+      // This ensures that if the user has a filter active, 
+      // the new data respects it immediately.
+      this.filterFlats();
+
+      // 3. Update dropdowns only if they were empty (optional)
+      if (this.towers.length === 0) {
+        this.towers = [...new Set(data.map((f: any) => f.tower_name))].filter(Boolean);
+        this.locations = [...new Set(data.map((f: any) => f.location))].filter(Boolean);
+        this.flatTypes = [...new Set(data.map((f: any) => f.flat_type))].filter(Boolean);
+      }
+
       this.loading = false;
-       // Data is here, stop the spinner
+      console.log("DEBUG: Flats updated successfully. Total:", this.allFlats.length);
     },
     error: (err) => {
       console.error(err);
       this.errorMsg = "Failed to load flats from Database";
       this.loading = false;
-
     }
   });
-  
 }
   getAmenitiesText(amenities: any): string {
   if (!amenities) return 'Not specified';

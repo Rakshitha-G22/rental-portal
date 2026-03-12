@@ -14,6 +14,7 @@ export interface Flat {
   image: string;
   amenities?: string[];
   is_booked?: boolean;
+  booking_status?: 'pending' | 'approved' | null;
 }
 
 @Injectable({
@@ -29,6 +30,7 @@ export class FlatService {
     // This will correctly resolve to: .../flats/
     return this.http.get<Flat[]>(`${this.baseUrl}/flats/`);
   }
+
 
   getFlatById(id: number): Observable<Flat> {
     // This will correctly resolve to: .../flats/123
