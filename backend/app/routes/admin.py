@@ -205,23 +205,30 @@ def get_all_bookings():
 @admin_bp.route('/booking/<int:id>', methods=['PUT'])
 @admin_only
 def update_booking_status(id):
+
     booking = Booking.query.get_or_404(id)
-    data = request.get_json() or {}
+
+    data = request.get_json()
     status = data.get("status")
 
-    if status:
-        # Ensure the status is set to the correct string
-        booking.status = status.lower() 
+    if not status:
+        return jsonify({"error": "Status required"}), 400
 
-        if status.lower() == "approved":
-            flat = Flat.query.get(booking.flat_id)
-            if flat:
-                flat.is_booked = True
-                db.session.add(flat)
-    
+    booking.status = status.lower()
+
+    # if approved → mark flat booked
+    if booking.status == "approved":
+
+        flat = Flat.query.get(booking.flat_id)
+
+        if flat:
+            flat.is_booked = True
+            db.session.add(flat)
+
+    db.session.add(booking)
     db.session.commit()
-    return jsonify({"message": "Status updated"}), 200
 
+    return jsonify({"message": "Booking updated"}), 200
 
     # =============================
 # REPORTS (BOOKING STATS)
