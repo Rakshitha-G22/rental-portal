@@ -74,18 +74,38 @@ def get_flat(flat_id):
 
 
     
-@flats_bp.route('/seed-data', methods=['GET', 'POST'])
+@flats_bp.route('/seed-data', methods=['POST'])
 def seed_flats():
-    sample_flats = [
-        Flat(title="Cozy Studio in City Center", price=1200, location="Downtown"),
-        Flat(title="Spacious 2-Bedroom Apartment", price=2500, location="Suburbs")
-    ]
-    
     try:
+        # 1. Create instances that match your actual Model columns
+        sample_flats = [
+            Flat(
+                flat_number="101", 
+                flat_type="Studio", 
+                location="Downtown", 
+                price=1200, 
+                tower_name="A", 
+                floor=1,
+                amenities="WiFi, AC"
+            ),
+            Flat(
+                flat_number="202", 
+                flat_type="2BHK", 
+                location="Suburbs", 
+                price=2500, 
+                tower_name="B", 
+                floor=2,
+                amenities="Parking, Gym"
+            )
+        ]
+        
+        # 2. Add to session and commit
         db.session.add_all(sample_flats)
         db.session.commit()
+        
         return jsonify({"message": "Database seeded successfully!"}), 201
+        
     except Exception as e:
         db.session.rollback()
+        # This helps us see the REAL error in Postman
         return jsonify({"error": str(e)}), 500
-
