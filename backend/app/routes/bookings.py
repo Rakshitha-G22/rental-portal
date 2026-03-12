@@ -25,6 +25,9 @@ def create_booking():
 
         user_id = get_jwt_identity()
         data = request.get_json(silent=True)
+        user = User.query.get(user_id)
+        if user.role == 'admin':
+            return jsonify({"msg": "Admins are not allowed to book flats."}), 403
 
         if not data:
             return jsonify({"msg": "No data provided"}), 422

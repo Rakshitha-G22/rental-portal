@@ -83,9 +83,17 @@ def get_all_flats():
     result = []
     for f in flats:
         # Find the active booking (approved or pending)
-            active_booking = Booking.query.filter_by(flat_id=f.id)\
-            .order_by(Booking.id.desc())\
-            .first()
+
+        final_output = []
+        results = db.session.query(Flat, Booking.status)\
+        .outerjoin(Booking, (Booking.flat_id == Flat.id) & 
+                           (Booking.status.in_(['pending', 'approved'])))\
+        .all()
+    
+    result = []
+    for row in results:
+        flat_obj = row[0]          # The Flat object
+        booking_status = row[1]
         
     result.append({
             "id": f.id,
@@ -99,7 +107,7 @@ def get_all_flats():
             "image": f.image,
             "is_booked": f.is_booked,
             "amenities": f.amenities if isinstance(f.amenities, list) else [],
-            "booking_status": active_booking.status if active_booking else None
+           "booking_status": booking_status
         })
     return jsonify(result), 200
 
