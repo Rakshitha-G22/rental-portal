@@ -10,27 +10,32 @@ flats_bp = Blueprint("flats_bp", __name__)
 @flats_bp.route("/", methods=["GET"])
 def get_all_flats():
     try:
-        # Load all flats and their associated bookings in one go
+        # Eager load bookings to check availability
         flats = Flat.query.options(joinedload(Flat.bookings)).all()
         flat_list = []
 
         for flat in flats:
-            # Check for any active booking in the loaded relationship
+            # Check for any active booking
             active_booking = next((b for b in flat.bookings if b.status.lower() in ["confirmed", "pending"]), None)
             
-            # ... (your existing amenities logic) ...
-
+            # Map EVERY field from the model to the JSON response
             flat_list.append({
                 "id": flat.id,
-                # ... other fields ...
+                "flat_number": flat.flat_number,
+                "flat_type": flat.flat_type,
+                "location": flat.location,
+                "price": flat.price,
+                "image": flat.image,
+                "tower_name": flat.tower_name,
+                "floor": flat.floor,
+                "amenities": flat.amenities, # This is already a list (JSON type)
                 "is_booked": active_booking is not None,
                 "booking_status": active_booking.status.lower() if active_booking else None
             })
 
         return jsonify(flat_list), 200
     except Exception as e:
-        return jsonify({"error": "Internal Server Error"}), 500
-        
+        return jsonify({"error": str(e)}), 500
 
 
 # ================= GET SINGLE FLAT =================
