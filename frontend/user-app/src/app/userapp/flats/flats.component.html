@@ -1,6 +1,12 @@
 <div class="max-w-7xl mx-auto p-6">
   <div class="mb-8 text-center">
     <h1 class="text-4xl font-bold mb-4">Available Flats</h1>
+
+    <div class="flex gap-4">
+    <button routerLink="/login" class="bg-gray-800 text-white px-5 py-2 rounded hover:bg-gray-900 transition">
+      Login
+    </button>
+    
     <div class="flex justify-end">
       <button *ngIf="isLoggedIn" routerLink="/my-bookings" class="bg-blue-600 text-white px-6 py-3 rounded hover:bg-blue-700 transition">
         View My Bookings
@@ -8,19 +14,21 @@
     </div>
   </div>
 
-  <div class="mb-8 flex flex-wrap gap-4 p-4 bg-gray-50 rounded-lg shadow-sm border">
-    <select [(ngModel)]="selectedTower" (change)="filterFlats()" class="border p-2 rounded flex-1">
-      <option value="">All Towers</option>
+  <div class="mb-6 flex flex-wrap items-center gap-3 p-3 bg-white border border-gray-200 rounded-lg shadow-sm w-fit">
+    <span class="text-sm font-semibold text-gray-500 mr-2">Filters:</span>
+    
+    <select [(ngModel)]="selectedTower" (change)="filterFlats()" class="border text-sm p-1.5 rounded w-32">
+      <option value="">Tower</option>
       <option *ngFor="let tower of towers" [value]="tower">{{ tower }}</option>
     </select>
 
-    <select [(ngModel)]="selectedLocation" (change)="filterFlats()" class="border p-2 rounded flex-1">
-      <option value="">All Locations</option>
+    <select [(ngModel)]="selectedLocation" (change)="filterFlats()" class="border text-sm p-1.5 rounded w-32">
+      <option value="">Location</option>
       <option *ngFor="let location of locations" [value]="location">{{ location }}</option>
     </select>
 
-    <select [(ngModel)]="selectedPriceRange" (change)="filterFlats()" class="border p-2 rounded flex-1">
-      <option value="">All Price Ranges</option>
+    <select [(ngModel)]="selectedPriceRange" (change)="filterFlats()" class="border text-sm p-1.5 rounded w-32">
+      <option value="">Price</option>
       <option *ngFor="let price of priceRanges" [value]="price">{{ price }}</option>
     </select>
   </div>
