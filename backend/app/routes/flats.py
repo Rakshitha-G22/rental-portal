@@ -15,10 +15,14 @@ def get_all_flats():
         flat_list = []
 
         for flat in flats:
-            # Check for any active booking
-            active_booking = next((b for b in flat.bookings if b.status.lower() in ["confirmed", "pending"]), None)
+            # Safely check for active booking
+            active_booking = None
+            if flat.bookings:
+                active_booking = next(
+                    (b for b in flat.bookings if b.status and b.status.lower() in ["confirmed", "pending"]), 
+                    None
+                )
             
-            # Map EVERY field from the model to the JSON response
             flat_list.append({
                 "id": flat.id,
                 "flat_number": flat.flat_number,
@@ -28,9 +32,10 @@ def get_all_flats():
                 "image": flat.image,
                 "tower_name": flat.tower_name,
                 "floor": flat.floor,
-                "amenities": flat.amenities, # This is already a list (JSON type)
+                "amenities": flat.amenities,
                 "is_booked": active_booking is not None,
-                "booking_status": active_booking.status.lower() if active_booking else None
+                # Use .get() or ternary to prevent errors if status is None
+                "booking_status": active_booking.status.lower() if active_booking and active_booking.status else None
             })
 
         return jsonify(flat_list), 200
