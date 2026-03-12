@@ -50,7 +50,8 @@ def create_app():
     def test_open():
         return "Backend is running!"
     
-    # with app.app_context():
-    #     db.create_all() # This creates all tables from your models automatically
+    with app.app_context():
+        db.create_all() 
+    # # This creates all tables from your models automatically
 
     return app
