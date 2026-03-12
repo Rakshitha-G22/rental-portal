@@ -63,32 +63,34 @@ ngOnInit(): void {
 }
   // ⭐ Load Flats From API
   loadFlats() {
+  this.loading = true; // Set loading to true at start
   this.flatService.getAllFlats().subscribe({
-    next: (response: any) => {
-      // If response is { "flats": [...] }, extract it:
-      const data = response.flats || response; 
-
+    next: (data: any) => {
+      // Since your Flask return is a direct array [...], 'data' is already the array
       if (!Array.isArray(data)) {
         console.error("Data is not an array:", data);
         this.errorMsg = "Invalid data format received";
+        this.loading = false;
         return;
       }
 
       this.flats = data;
-      this.allFlats = data;
+      this.allFlats = [...data]; // Create a copy for filtering
       
-      // ... your existing logic remains the same
-      this.towers = [...new Set(data.map(f => f.tower_name))];
-      // ... etc
+      // Populate your filter dropdowns dynamically from the DB data
+this.towers = [...new Set(data.map((f: any) => f.tower_name))].filter(Boolean);
+this.locations = [...new Set(data.map((f: any) => f.location))].filter(Boolean);
+this.flatTypes = [...new Set(data.map((f: any) => f.flat_type))].filter(Boolean);
+      
+      this.loading = false; // Data is here, stop the spinner
     },
     error: (err) => {
       console.error(err);
-      this.errorMsg = "Failed to load flats";
+      this.errorMsg = "Failed to load flats from Database";
       this.loading = false;
     }
   });
-
-  }
+}
   getAmenitiesText(amenities: any): string {
   if (!amenities) return 'Not specified';
 
