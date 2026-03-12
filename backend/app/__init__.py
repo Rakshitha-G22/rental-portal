@@ -47,7 +47,7 @@ def create_app():
     app.register_blueprint(auth_bp, url_prefix="/auth")
     app.register_blueprint(bookings_bp, url_prefix="/bookings")
     app.register_blueprint(flats_bp, url_prefix="/flats")
-    app.register_blueprint(admin_bp, url_prefix="/api/admin")
+    app.register_blueprint(admin_bp, url_prefix="/admin")
     
     # user_bp does not have a prefix, ensure its routes include /api if needed
     app.register_blueprint(user_bp)
