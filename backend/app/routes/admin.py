@@ -79,36 +79,34 @@ def add_flat():
 
 @admin_bp.route('/flats', methods=['GET'])
 def get_all_flats():
-    flats = Flat.query.all()
-    result = []
-    for f in flats:
-        # Find the active booking (approved or pending)
 
-        final_output = []
-        results = db.session.query(Flat, Booking.status)\
-        .outerjoin(Booking, (Booking.flat_id == Flat.id) & 
-                           (Booking.status.in_(['pending', 'approved'])))\
-        .all()
-    
-    result = []
-    for row in results:
-        flat_obj = row[0]          # The Flat object
-        booking_status = row[1]
-        
-    result.append({
-            "id": f.id,
-            "flat_number": f.flat_number,
+    results = db.session.query(
+        Flat,
+        Booking.status
+    ).outerjoin(
+        Booking,
+        (Booking.flat_id == Flat.id) &
+        (Booking.status.in_(["pending", "approved"]))
+    ).all()
 
-            "flat_type": f.flat_type,
-            "tower_name": f.tower_name,
-            "location": f.location,
-            "floor": f.floor,
-            "price": f.price,
-            "image": f.image,
-            "is_booked": f.is_booked,
-            "amenities": f.amenities if isinstance(f.amenities, list) else [],
-           "booking_status": booking_status
+    result = []
+
+    for flat, booking_status in results:
+
+        result.append({
+            "id": flat.id,
+            "flat_number": flat.flat_number,
+            "flat_type": flat.flat_type,
+            "tower_name": flat.tower_name,
+            "location": flat.location,
+            "floor": flat.floor,
+            "price": flat.price,
+            "image": flat.image,
+            "is_booked": flat.is_booked,
+            "amenities": flat.amenities if isinstance(flat.amenities, list) else [],
+            "booking_status": booking_status
         })
+
     return jsonify(result), 200
 
 
